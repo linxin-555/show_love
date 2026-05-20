@@ -1,0 +1,21 @@
+{
+  "name": "show-love",
+  "version": "1.0.0",
+  "description": "情侣照片展示网站",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.0",
+    "ejs": "^3.1.10",
+    "compression": "^1.7.4",
+    "cors": "^2.8.5",
+    "express-session": "^1.18.0",
+    "multer": "^1.4.5-lts.1",
+    "sharp": "^0.33.5",
+    "bcryptjs": "^2.4.3",
+    "uuid": "^10.0.0"
+  }
+}

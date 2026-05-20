@@ -1,0 +1,19 @@
+<header class="header">
+  <div class="header-inner">
+    <a href="/" class="logo">
+      <span class="logo-icon"><3</span>
+      <span>Show Love</span>
+    </a>
+    <nav class="nav">
+      <a href="/" class="nav-link <%= active === 'home' ? 'active' : '' %>">相册</a>
+      <a href="/messages" class="nav-link <%= active === 'messages' ? 'active' : '' %>">留言板</a>
+      <% if (user) { %>
+        <a href="/admin" class="nav-link <%= active === 'admin' ? 'active' : '' %>">管理</a>
+        <a href="#" class="nav-link" onclick="logout()">退出</a>
+      <% } else { %>
+        <a href="/login" class="nav-link">登录</a>
+      <% } %>
+    </nav>
+  </div>
+</header>
+<main class="main">

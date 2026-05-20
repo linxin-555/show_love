@@ -1,0 +1,51 @@
+<%- include('partials/head', { title: '我们的故事' }) %>
+<%- include('partials/header') %>
+
+<section class="hero">
+  <h1 class="hero-title">
+    <span class="heart-beat">&#10084;</span> 我们的故事
+  </h1>
+  <p class="hero-sub">每一张照片，都是最珍贵的回忆</p>
+  <p class="photo-count"><%= photos.length %> 张照片</p>
+</section>
+
+<section class="gallery">
+  <% if (photos.length === 0) { %>
+    <div class="empty-state">
+      <div class="empty-icon">&#128247;</div>
+      <p>还没有照片，登录后开始上传吧~</p>
+      <a href="/login" class="btn btn-primary">去上传</a>
+    </div>
+  <% } else { %>
+    <div class="grid" id="galleryGrid">
+      <% photos.forEach((photo, index) => { %>
+        <div class="grid-item" data-index="<%= index %>" data-original="/uploads/<%= photo.original %>">
+          <img src="/uploads/<%= photo.filename %>" alt="" loading="lazy">
+        </div>
+      <% }) %>
+    </div>
+  <% } %>
+</section>
+
+<div class="lightbox" id="lightbox">
+  <span class="lightbox-close">&times;</span>
+  <span class="lightbox-nav lightbox-prev">&lsaquo;</span>
+  <span class="lightbox-nav lightbox-next">&rsaquo;</span>
+  <img src="" alt="" id="lightboxImg">
+  <div class="lightbox-counter" id="lightboxCounter"></div>
+</div>
+
+<footer class="footer">
+  <p>Made with <span class="heart-beat">&#10084;</span> for you</p>
+</footer>
+
+</main>
+
+<script src="/js/gallery.js"></script>
+<script>
+function logout() {
+  fetch('/api/auth/logout', { method: 'POST' }).then(() => location.href = '/');
+}
+</script>
+</body>
+</html>
