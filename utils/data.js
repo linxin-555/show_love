@@ -7,6 +7,9 @@ const dataDir = path.join(__dirname, '..', 'data');
 const stores = {};
 
 function loadData() {
+  if (!fs.existsSync(dataDir)) {
+    fs.mkdirSync(dataDir, { recursive: true });
+  }
   const files = ['photos.json', 'users.json', 'messages.json'];
   files.forEach(file => {
     const filePath = path.join(dataDir, file);
