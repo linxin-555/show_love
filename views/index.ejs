@@ -20,7 +20,7 @@
     <div class="grid" id="galleryGrid">
       <% photos.forEach((photo, index) => { %>
         <div class="grid-item" data-index="<%= index %>" data-original="/uploads/<%= photo.original %>">
-          <img src="/uploads/<%= photo.filename %>" alt="" loading="lazy">
+          <img src="/uploads/<%= photo.filename %>?v=<%= photo.version || 0 %>" alt="" loading="lazy">
         </div>
       <% }) %>
     </div>

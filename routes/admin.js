@@ -3,7 +3,7 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 const { v4: uuidv4 } = require('uuid');
-const { getData, addItem, removeItem } = require('../utils/data');
+const { getData, addItem, removeItem, saveData } = require('../utils/data');
 
 let sharp = null;
 try {
@@ -97,9 +97,6 @@ router.delete('/photos/:id', (req, res) => {
 router.post('/photos/:id/rotate', async (req, res) => {
   if (!sharp) return res.status(500).json({ error: '旋转功能需要 sharp，当前 Node.js 版本不支持' });
 
-  const { direction } = req.body;
-  const angle = direction === 'right' ? 90 : -90;
-
   try {
     const photos = getData('photos');
     const photo = photos.find(p => p.id === req.params.id);
@@ -111,11 +108,14 @@ router.post('/photos/:id/rotate', async (req, res) => {
 
     for (const filePath of [origPath, thumbPath]) {
       if (!fs.existsSync(filePath)) continue;
-      const rotated = await sharp(filePath).rotate(angle).toBuffer();
+      const rotated = await sharp(filePath).rotate(90).toBuffer();
       fs.writeFileSync(filePath, rotated);
     }
 
-    res.json({ ok: true });
+    photo.version = (photo.version || 0) + 1;
+    saveData('photos', photos);
+
+    res.json({ ok: true, version: photo.version });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: '旋转失败' });

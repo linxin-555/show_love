@@ -480,15 +480,13 @@ body {
   padding: 5px 10px;
 }
 
-.rotate-left,
-.rotate-right {
+.rotate-btn {
   background: #fff;
   color: var(--text);
   border: 1px solid var(--border) !important;
 }
 
-.rotate-left:hover,
-.rotate-right:hover {
+.rotate-btn:hover {
   background: var(--primary-light);
   color: var(--primary);
 }
