@@ -29,7 +29,10 @@
 
   function open(i) {
     currentIndex = i;
-    lightboxImg.src = itemsArray[i].dataset.original;
+    var item = itemsArray[i];
+    var src = item.dataset.original;
+    var ver = item.dataset.version || '0';
+    lightboxImg.src = src + '?v=' + ver;
     lightbox.classList.add('active');
     document.body.style.overflow = 'hidden';
     updateCounter();

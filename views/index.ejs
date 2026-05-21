@@ -33,8 +33,9 @@
       <div class="timeline-item"
            style="--delay: <%= pi * 60 %>ms"
            data-original="/uploads/<%= photo.original %>"
+           data-version="<%= photo.version || 0 %>"
            data-index="<%= idx %>">
-        <img src="/uploads/<%= photo.filename %>?v=<%= photo.version || 0 %>" alt="" loading="lazy">
+        <img src="/uploads/<%= photo.filename %>?v=<%= photo.version || 0 %>" alt="">
         <div class="timeline-item-info">
           <span class="ti-uploader<%= isHe ? ' he' : ' she' %>"><%= photo.uploadedBy %></span>
           <span class="ti-time"><%= new Date(photo.uploadedAt).toLocaleTimeString('zh-CN', { hour:'2-digit', minute:'2-digit' }) %></span>
