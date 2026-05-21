@@ -192,23 +192,22 @@ body {
 
 .timeline-photos {
   padding-left: 48px;
-  columns: 2;
-  column-gap: 14px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
 }
 
 @media (max-width: 640px) {
   .timeline-photos {
-    padding-left: 42px;
-    columns: 1;
+    padding-left: 36px;
+    grid-template-columns: 1fr;
   }
   .timeline::before { left: 14px; }
-  .timeline-date { padding-left: 36px; }
-  .date-dot { left: 7px; }
+  .timeline-date { padding-left: 32px; font-size: 14px; }
+  .date-dot { left: 7px; width: 14px; height: 14px; }
 }
 
 .timeline-item {
-  break-inside: avoid;
-  margin-bottom: 14px;
   border-radius: var(--radius);
   overflow: hidden;
   cursor: pointer;
@@ -216,7 +215,19 @@ body {
   position: relative;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   animation: fadeUp 0.5s ease backwards;
-  animation-delay: var(--delay, 0ms);
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.timeline-item img {
+  width: 100%;
+  height: auto;
+  display: block;
+  min-height: 100px;
+  transition: transform 0.4s ease;
 }
 
 @keyframes fadeUp {
