@@ -22,12 +22,16 @@
     <div class="admin-grid" id="adminGrid">
       <% photos.forEach(photo => { %>
         <div class="admin-grid-item" data-id="<%= photo.id %>">
-          <img src="/uploads/<%= photo.filename %>" alt="">
+          <img src="/uploads/<%= photo.filename %>?v=<%= photo.id.slice(0,8) %>" alt="">
           <div class="admin-item-info">
             <span><%= photo.uploadedBy %></span>
             <span><%= new Date(photo.uploadedAt).toLocaleDateString('zh-CN') %></span>
           </div>
-          <button class="btn btn-danger btn-sm delete-photo" data-id="<%= photo.id %>">删除</button>
+          <div class="admin-item-actions">
+            <button class="btn btn-sm rotate-left" data-id="<%= photo.id %>" title="向左旋转 90°">&#x21BA;</button>
+            <button class="btn btn-sm rotate-right" data-id="<%= photo.id %>" title="向右旋转 90°">&#x21BB;</button>
+            <button class="btn btn-danger btn-sm delete-photo" data-id="<%= photo.id %>">删除</button>
+          </div>
         </div>
       <% }) %>
       <% if (photos.length === 0) { %>
@@ -116,6 +120,34 @@ document.getElementById('uploadForm').addEventListener('submit', async (e) => {
   document.getElementById('previewContainer').innerHTML = '';
   document.getElementById('uploadBtn').disabled = true;
   location.reload();
+});
+
+document.querySelectorAll('.rotate-left').forEach(btn => {
+  btn.addEventListener('click', async () => {
+    const id = btn.dataset.id;
+    try {
+      const res = await fetch('/api/admin/photos/' + id + '/rotate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ direction: 'left' })
+      });
+      if (res.ok) location.reload();
+    } catch (err) { alert('旋转失败'); }
+  });
+});
+
+document.querySelectorAll('.rotate-right').forEach(btn => {
+  btn.addEventListener('click', async () => {
+    const id = btn.dataset.id;
+    try {
+      const res = await fetch('/api/admin/photos/' + id + '/rotate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ direction: 'right' })
+      });
+      if (res.ok) location.reload();
+    } catch (err) { alert('旋转失败'); }
+  });
 });
 
 document.querySelectorAll('.delete-photo').forEach(btn => {

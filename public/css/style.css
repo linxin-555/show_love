@@ -467,8 +467,30 @@ body {
   justify-content: space-between;
 }
 
-.admin-grid-item .btn {
-  margin: 0 10px 10px;
+.admin-item-actions {
+  display: flex;
+  gap: 4px;
+  padding: 0 10px 10px;
+  flex-wrap: wrap;
+}
+
+.admin-item-actions .btn {
+  margin: 0;
+  font-size: 13px;
+  padding: 5px 10px;
+}
+
+.rotate-left,
+.rotate-right {
+  background: #fff;
+  color: var(--text);
+  border: 1px solid var(--border) !important;
+}
+
+.rotate-left:hover,
+.rotate-right:hover {
+  background: var(--primary-light);
+  color: var(--primary);
 }
 
 /* Messages */

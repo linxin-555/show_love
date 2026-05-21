@@ -49,7 +49,12 @@ router.post('/upload', upload.single('photo'), async (req, res) => {
     const thumbPath = path.join(path.dirname(originalPath), thumbFilename);
 
     if (sharp) {
-      await sharp(originalPath)
+      const rotatedOriginal = await sharp(originalPath)
+        .rotate()
+        .toBuffer();
+      fs.writeFileSync(originalPath, rotatedOriginal);
+
+      await sharp(rotatedOriginal)
         .resize(500, 500, { fit: 'inside', withoutEnlargement: true })
         .jpeg({ quality: 80 })
         .toFile(thumbPath);
@@ -87,6 +92,34 @@ router.delete('/photos/:id', (req, res) => {
 
   removeItem('photos', req.params.id);
   res.json({ ok: true });
+});
+
+router.post('/photos/:id/rotate', async (req, res) => {
+  if (!sharp) return res.status(500).json({ error: '旋转功能需要 sharp，当前 Node.js 版本不支持' });
+
+  const { direction } = req.body;
+  const angle = direction === 'right' ? 90 : -90;
+
+  try {
+    const photos = getData('photos');
+    const photo = photos.find(p => p.id === req.params.id);
+    if (!photo) return res.status(404).json({ error: '照片不存在' });
+
+    const uploadsDir = path.join(__dirname, '..', 'public', 'uploads');
+    const thumbPath = path.join(uploadsDir, photo.filename);
+    const origPath = path.join(uploadsDir, photo.original);
+
+    for (const filePath of [origPath, thumbPath]) {
+      if (!fs.existsSync(filePath)) continue;
+      const rotated = await sharp(filePath).rotate(angle).toBuffer();
+      fs.writeFileSync(filePath, rotated);
+    }
+
+    res.json({ ok: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: '旋转失败' });
+  }
 });
 
 module.exports = router;
