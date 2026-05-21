@@ -214,36 +214,31 @@ body {
   box-shadow: 0 2px 8px rgba(0,0,0,0.06);
   position: relative;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  animation: fadeUp 0.5s ease backwards;
+  opacity: 1;
+  transform: translateY(0);
 }
 
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(24px); }
-  to   { opacity: 1; transform: translateY(0); }
+.timeline-item.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.timeline-item.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .timeline-item img {
   width: 100%;
   height: auto;
   display: block;
-  min-height: 100px;
   transition: transform 0.4s ease;
-}
-
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(24px); }
-  to   { opacity: 1; transform: translateY(0); }
 }
 
 .timeline-item:hover {
   transform: translateY(-3px);
   box-shadow: 0 8px 24px rgba(233, 30, 99, 0.12);
-}
-
-.timeline-item img {
-  width: 100%;
-  display: block;
-  transition: transform 0.4s ease;
 }
 
 .timeline-item:hover img {

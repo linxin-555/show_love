@@ -9,8 +9,28 @@
   if (items.length === 0) return;
 
   itemsArray.forEach(function(item, i) {
+    item.classList.add('reveal');
     item.addEventListener('click', function() { open(i); });
   });
+
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { rootMargin: '50px', threshold: 0.01 });
+
+    itemsArray.forEach(function(item) {
+      observer.observe(item);
+    });
+  } else {
+    itemsArray.forEach(function(item, i) {
+      setTimeout(function() { item.classList.add('visible'); }, i * 60);
+    });
+  }
 
   document.querySelector('.lightbox-close').addEventListener('click', close);
   document.querySelector('.lightbox-prev').addEventListener('click', prev);
