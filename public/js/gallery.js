@@ -1,5 +1,5 @@
 (function() {
-  var items = document.querySelectorAll('.grid-item');
+  var items = document.querySelectorAll('.timeline-item');
   var lightbox = document.getElementById('lightbox');
   var lightboxImg = document.getElementById('lightboxImg');
   var counter = document.getElementById('lightboxCounter');
@@ -29,8 +29,7 @@
 
   function open(i) {
     currentIndex = i;
-    var item = itemsArray[i];
-    lightboxImg.src = item.dataset.original;
+    lightboxImg.src = itemsArray[i].dataset.original;
     lightbox.classList.add('active');
     document.body.style.overflow = 'hidden';
     updateCounter();

@@ -47,7 +47,21 @@ app.use('/api/messages', messagesRoutes);
 
 app.get('/', (req, res) => {
   const photos = getData('photos');
-  res.render('index', { photos, active: 'home' });
+  const sorted = [...photos].sort((a, b) => new Date(b.uploadedAt) - new Date(a.uploadedAt));
+  const groups = [];
+  let currentKey = '';
+  for (const p of sorted) {
+    const d = new Date(p.uploadedAt);
+    const key = d.getFullYear() + '-' + d.getMonth() + '-' + d.getDate();
+    if (key !== currentKey) {
+      currentKey = key;
+      const dateStr = d.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' });
+      const weekday = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'][d.getDay()];
+      groups.push({ date: dateStr, weekday, photos: [] });
+    }
+    groups[groups.length - 1].photos.push(p);
+  }
+  res.render('index', { groups, active: 'home' });
 });
 
 app.get('/messages', (req, res) => {

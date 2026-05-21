@@ -1,31 +1,52 @@
 <%- include('partials/head', { title: '我们的故事' }) %>
 <%- include('partials/header') %>
 
+<% const total = groups.reduce((s, g) => s + g.photos.length, 0); %>
+
 <section class="hero">
   <h1 class="hero-title">
     <span class="heart-beat">&#10084;</span> 我们的故事
   </h1>
   <p class="hero-sub">每一张照片，都是最珍贵的回忆</p>
-  <p class="photo-count"><%= photos.length %> 张照片</p>
+  <p class="photo-count"><%= total %> 张照片 · <%= groups.length %> 天</p>
 </section>
 
-<section class="gallery">
-  <% if (photos.length === 0) { %>
-    <div class="empty-state">
-      <div class="empty-icon">&#128247;</div>
-      <p>还没有照片，登录后开始上传吧~</p>
-      <a href="/login" class="btn btn-primary">去上传</a>
+<% if (total === 0) { %>
+<div class="empty-state">
+  <div class="empty-icon">&#128247;</div>
+  <p>还没有照片，登录后开始上传吧~</p>
+  <a href="/login" class="btn btn-primary">去上传</a>
+</div>
+<% } else { %>
+
+<div class="timeline" id="timeline">
+  <% groups.forEach(function(group, gi) { %>
+  <div class="timeline-group">
+    <div class="timeline-date">
+      <span class="date-dot"></span>
+      <span class="date-heart">&#10084;</span>
+      <span class="date-text"><%= group.date %> <%= group.weekday %></span>
+      <span class="date-count"><%= group.photos.length %> 张</span>
     </div>
-  <% } else { %>
-    <div class="grid" id="galleryGrid">
-      <% photos.forEach((photo, index) => { %>
-        <div class="grid-item" data-index="<%= index %>" data-original="/uploads/<%= photo.original %>">
-          <img src="/uploads/<%= photo.filename %>?v=<%= photo.version || 0 %>" alt="" loading="lazy">
+    <div class="timeline-photos">
+      <% group.photos.forEach(function(photo, pi) { var isHe = photo.uploadedBy === '他'; var idx = gi * 100 + pi; %>
+      <div class="timeline-item"
+           style="--delay: <%= pi * 60 %>ms"
+           data-original="/uploads/<%= photo.original %>"
+           data-index="<%= idx %>">
+        <img src="/uploads/<%= photo.filename %>?v=<%= photo.version || 0 %>" alt="" loading="lazy">
+        <div class="timeline-item-info">
+          <span class="ti-uploader<%= isHe ? ' he' : ' she' %>"><%= photo.uploadedBy %></span>
+          <span class="ti-time"><%= new Date(photo.uploadedAt).toLocaleTimeString('zh-CN', { hour:'2-digit', minute:'2-digit' }) %></span>
         </div>
-      <% }) %>
+      </div>
+      <% }); %>
     </div>
-  <% } %>
-</section>
+  </div>
+  <% }); %>
+</div>
+
+<% } %>
 
 <div class="lightbox" id="lightbox">
   <span class="lightbox-close">&times;</span>
