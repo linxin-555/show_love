@@ -56,14 +56,14 @@
   function open(i) {
     currentIndex = i;
     var item = itemsArray[i];
-    var src = item.dataset.original;
-    var ver = item.dataset.version || '0';
-    var desc = item.dataset.description || '';
-    lightboxImg.src = src + '?v=' + ver;
-    updateCaption(desc, item.dataset.photoId || '');
+    var thumb = item.querySelector('img');
+    lightboxImg.src = thumb ? thumb.src : (item.dataset.original + '?v=' + (item.dataset.version || '0'));
     lightbox.classList.add('active');
     document.body.style.overflow = 'hidden';
     updateCounter();
+
+    var desc = item.dataset.description || '';
+    updateCaption(desc, item.dataset.photoId || '');
   }
 
   function updateCaption(desc, photoId) {

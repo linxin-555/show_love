@@ -315,6 +315,8 @@ body {
   justify-content: center;
   opacity: 0;
   transition: opacity 0.3s;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
 }
 
 .lightbox.active {
