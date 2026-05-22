@@ -63,4 +63,15 @@ function saveData(name, data) {
   fs.writeFileSync(path.join(dataDir, key), JSON.stringify(data, null, 2), 'utf-8');
 }
 
-module.exports = { loadData, getData, addItem, removeItem, saveData };
+function updateItem(name, id, updates) {
+  const key = name + '.json';
+  const arr = stores[key] || [];
+  const idx = arr.findIndex(i => i.id === id);
+  if (idx === -1) return null;
+  Object.assign(arr[idx], updates);
+  stores[key] = arr;
+  fs.writeFileSync(path.join(dataDir, key), JSON.stringify(arr, null, 2), 'utf-8');
+  return arr[idx];
+}
+
+module.exports = { loadData, getData, addItem, removeItem, updateItem, saveData };

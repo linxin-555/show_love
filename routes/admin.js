@@ -3,7 +3,7 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 const { v4: uuidv4 } = require('uuid');
-const { getData, addItem, removeItem, saveData } = require('../utils/data');
+const { getData, addItem, removeItem, updateItem, saveData } = require('../utils/data');
 
 let sharp = null;
 try {
@@ -67,7 +67,8 @@ router.post('/upload', upload.single('photo'), async (req, res) => {
       filename: thumbFilename,
       original: filename,
       uploadedBy: req.session.user.displayName,
-      uploadedAt: new Date().toISOString()
+      uploadedAt: new Date().toISOString(),
+      description: ''
     });
 
     res.json({ ok: true, photo });
@@ -120,6 +121,21 @@ router.post('/photos/:id/rotate', async (req, res) => {
     console.error(err);
     res.status(500).json({ error: '旋转失败' });
   }
+});
+
+router.put('/photos/:id/time', (req, res) => {
+  const { uploadedAt } = req.body;
+  if (!uploadedAt) return res.status(400).json({ error: '请提供时间' });
+  const photo = updateItem('photos', req.params.id, { uploadedAt });
+  if (!photo) return res.status(404).json({ error: '照片不存在' });
+  res.json({ ok: true, photo });
+});
+
+router.put('/photos/:id/description', (req, res) => {
+  const { description } = req.body;
+  const photo = updateItem('photos', req.params.id, { description: description || '' });
+  if (!photo) return res.status(404).json({ error: '照片不存在' });
+  res.json({ ok: true, photo });
 });
 
 module.exports = router;

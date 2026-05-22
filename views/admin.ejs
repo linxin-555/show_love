@@ -24,8 +24,21 @@
         <div class="admin-grid-item" data-id="<%= photo.id %>">
           <img src="/uploads/<%= photo.filename %>?v=<%= photo.version || 0 %>" alt="">
           <div class="admin-item-info">
-            <span><%= photo.uploadedBy %></span>
-            <span><%= new Date(photo.uploadedAt).toLocaleDateString('zh-CN') %></span>
+            <span class="ai-uploader"><%= photo.uploadedBy %></span>
+            <span class="ai-time"
+                  data-id="<%= photo.id %>"
+                  data-time="<%= new Date(photo.uploadedAt).toISOString().slice(0,16) %>"
+                  title="点击修改时间">
+              <%= new Date(photo.uploadedAt).toLocaleString('zh-CN', { month:'numeric', day:'numeric', hour:'2-digit', minute:'2-digit' }) %>
+            </span>
+          </div>
+          <div class="admin-item-desc">
+            <input type="text"
+                   class="desc-input"
+                   data-id="<%= photo.id %>"
+                   placeholder="添加描述..."
+                   value="<%= photo.description || '' %>"
+                   maxlength="100">
           </div>
           <div class="admin-item-actions">
             <button class="btn btn-sm rotate-btn" data-id="<%= photo.id %>" title="向右旋转 90°">&#x21BB;</button>
@@ -147,6 +160,56 @@ document.querySelectorAll('.delete-msg').forEach(btn => {
     const id = btn.dataset.id;
     const res = await fetch('/api/messages/' + id, { method: 'DELETE' });
     if (res.ok) location.reload();
+  });
+});
+
+document.querySelectorAll('.ai-time').forEach(el => {
+  el.addEventListener('click', function() {
+    const originalHtml = this.innerHTML;
+    const id = this.dataset.id;
+    const current = this.dataset.time || '';
+    this.innerHTML = '<input type="datetime-local" class="time-edit-input" value="' + current + '">' +
+      '<button class="time-edit-save">&#10003;</button>' +
+      '<button class="time-edit-cancel">&times;</button>';
+
+    const input = this.querySelector('.time-edit-input');
+    this.querySelector('.time-edit-save').addEventListener('click', async (e) => {
+      e.stopPropagation();
+      const newTime = input.value;
+      if (!newTime) return;
+      try {
+        const res = await fetch('/api/admin/photos/' + id + '/time', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ uploadedAt: new Date(newTime).toISOString() })
+        });
+        if (res.ok) location.reload();
+        else alert('修改失败');
+      } catch (err) { alert('修改失败'); }
+    });
+    this.querySelector('.time-edit-cancel').addEventListener('click', (e) => {
+      e.stopPropagation();
+      this.innerHTML = originalHtml;
+    });
+    input.focus();
+  });
+});
+
+document.querySelectorAll('.desc-input').forEach(input => {
+  let timer;
+  input.addEventListener('input', function() {
+    clearTimeout(timer);
+    const id = this.dataset.id;
+    const desc = this.value;
+    timer = setTimeout(async () => {
+      try {
+        await fetch('/api/admin/photos/' + id + '/description', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ description: desc })
+        });
+      } catch (err) {}
+    }, 600);
   });
 });
 

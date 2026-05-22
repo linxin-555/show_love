@@ -31,13 +31,18 @@
     <div class="timeline-photos">
       <% group.photos.forEach(function(photo, pi) { var isHe = photo.uploadedBy === '他'; var idx = gi * 100 + pi; %>
       <div class="timeline-item"
+           data-photo-id="<%= photo.id %>"
            data-original="/uploads/<%= photo.original %>"
            data-version="<%= photo.version || 0 %>"
+           data-description="<%= photo.description || '' %>"
            data-index="<%= idx %>">
         <img src="/uploads/<%= photo.filename %>?v=<%= photo.version || 0 %>" alt="">
         <div class="timeline-item-info">
           <span class="ti-uploader<%= isHe ? ' he' : ' she' %>"><%= photo.uploadedBy %></span>
-          <span class="ti-time"><%= new Date(photo.uploadedAt).toLocaleTimeString('zh-CN', { hour:'2-digit', minute:'2-digit' }) %></span>
+          <span class="ti-meta">
+            <% if (photo.description) { %><span class="ti-desc"><%= photo.description.slice(0, 20) %><%= photo.description.length > 20 ? '...' : '' %></span><% } %>
+            <span class="ti-time"><%= new Date(photo.uploadedAt).toLocaleTimeString('zh-CN', { hour:'2-digit', minute:'2-digit' }) %></span>
+          </span>
         </div>
       </div>
       <% }); %>
@@ -52,7 +57,15 @@
   <span class="lightbox-close">&times;</span>
   <span class="lightbox-nav lightbox-prev">&lsaquo;</span>
   <span class="lightbox-nav lightbox-next">&rsaquo;</span>
-  <img src="" alt="" id="lightboxImg">
+  <div class="lightbox-main">
+    <img src="" alt="" id="lightboxImg">
+    <div class="lightbox-caption" id="lightboxCaption">
+      <span class="lightbox-desc-text" id="lightboxDesc"></span>
+      <% if (user) { %>
+      <input type="text" class="lightbox-desc-input" id="lightboxDescInput" placeholder="添加描述..." maxlength="100" style="display:none;">
+      <% } %>
+    </div>
+  </div>
   <div class="lightbox-counter" id="lightboxCounter"></div>
 </div>
 

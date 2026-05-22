@@ -3,6 +3,8 @@
   var lightbox = document.getElementById('lightbox');
   var lightboxImg = document.getElementById('lightboxImg');
   var counter = document.getElementById('lightboxCounter');
+  var descText = document.getElementById('lightboxDesc');
+  var descInput = document.getElementById('lightboxDescInput');
   var currentIndex = -1;
   var itemsArray = Array.from(items);
 
@@ -52,10 +54,27 @@
     var item = itemsArray[i];
     var src = item.dataset.original;
     var ver = item.dataset.version || '0';
+    var desc = item.dataset.description || '';
     lightboxImg.src = src + '?v=' + ver;
+    updateCaption(desc, item.dataset.photoId || '');
     lightbox.classList.add('active');
     document.body.style.overflow = 'hidden';
     updateCounter();
+  }
+
+  function updateCaption(desc, photoId) {
+    if (descText) descText.textContent = desc;
+    if (descInput) {
+      if (desc) {
+        descInput.style.display = 'none';
+        if (descText) descText.style.display = '';
+      } else {
+        descText.style.display = 'none';
+        descInput.style.display = '';
+        descInput.value = '';
+      }
+      descInput.dataset.photoId = photoId;
+    }
   }
 
   function close() {
@@ -75,5 +94,39 @@
 
   function updateCounter() {
     counter.textContent = (currentIndex + 1) + ' / ' + itemsArray.length;
+  }
+
+  if (descInput) {
+    descInput.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') saveDesc();
+    });
+    descInput.addEventListener('blur', saveDesc);
+  }
+
+  if (descText) {
+    descText.addEventListener('click', function() {
+      if (!descInput) return;
+      descText.style.display = 'none';
+      descInput.style.display = '';
+      descInput.value = descText.textContent || '';
+      descInput.focus();
+    });
+  }
+
+  function saveDesc() {
+    if (!descInput) return;
+    var photoId = descInput.dataset.photoId;
+    var desc = descInput.value.trim();
+    if (!photoId) { descInput.style.display = 'none'; if (descText) descText.style.display = ''; return; }
+    fetch('/api/admin/photos/' + photoId + '/description', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ description: desc })
+    }).then(function(res) {
+      if (res.ok) {
+        descInput.style.display = 'none';
+        if (descText) { descText.style.display = ''; descText.textContent = desc; }
+      }
+    });
   }
 })();
