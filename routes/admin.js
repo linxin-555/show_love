@@ -51,6 +51,8 @@ router.post('/upload', upload.single('photo'), async (req, res) => {
     if (sharp) {
       const rotatedOriginal = await sharp(originalPath)
         .rotate()
+        .resize(1920, 1920, { fit: 'inside', withoutEnlargement: true })
+        .jpeg({ quality: 85 })
         .toBuffer();
       fs.writeFileSync(originalPath, rotatedOriginal);
 

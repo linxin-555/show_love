@@ -56,6 +56,8 @@ for (const file of files) {
     if (sharp) {
       const rotatedOriginal = await sharp(file.full)
         .rotate()
+        .resize(1920, 1920, { fit: 'inside', withoutEnlargement: true })
+        .jpeg({ quality: 85 })
         .toBuffer();
       fs.writeFileSync(originalPath, rotatedOriginal);
 
@@ -64,6 +66,7 @@ for (const file of files) {
         .jpeg({ quality: 80 })
         .toFile(thumbPath);
     } else {
+      fs.copyFileSync(file.full, originalPath);
       fs.copyFileSync(file.full, thumbPath);
     }
 

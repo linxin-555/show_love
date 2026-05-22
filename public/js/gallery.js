@@ -35,11 +35,15 @@
   }
 
   document.querySelector('.lightbox-close').addEventListener('click', close);
+  document.querySelector('.lightbox-close').addEventListener('touchend', function(e) { e.preventDefault(); close(); });
   document.querySelector('.lightbox-prev').addEventListener('click', prev);
   document.querySelector('.lightbox-next').addEventListener('click', next);
 
   lightbox.addEventListener('click', function(e) {
     if (e.target === lightbox) close();
+  });
+  lightbox.addEventListener('touchend', function(e) {
+    if (e.target === lightbox) { e.preventDefault(); close(); }
   });
 
   document.addEventListener('keydown', function(e) {
